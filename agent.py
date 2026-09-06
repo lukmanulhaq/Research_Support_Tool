@@ -19,9 +19,10 @@ class AgentState(TypedDict):
 
 # Deliberate Model Selection[cite: 1]
 # 1. Groq for low-latency routing decisions[cite: 1]
-router_model = ChatGroq(
+router_model = ChatOpenAI(
     model="openai/gpt-oss-120b",
-    api_key=st.secrets["GROQ_API_KEY"],
+    openai_api_key=st.secrets["OPENROUTER_API_KEY"],
+    openai_api_base="https://openrouter.ai/api/v1",
     temperature=0
 )
 
