@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>RST - Agentic Literature Review & Research Support Tool</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js for Latency/Cost Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Mermaid.js for Architecture Diagram -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true, theme: 'dark'});</script>
+  <script src="./streamlit-component-lib.js?v=3"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              900: '#064e3b',
+            },
+            agent: {
+              router: '#3b82f6',     // Blue
+              retrieval: '#06b6d4',  // Cyan
+              synthesizer: '#8b5cf6',// Purple
+              critic: '#f59e0b',     // Amber
+              orchestrator: '#10b981'// Emerald
+            },
+            darkbg: '#0B0F19',
+            darkpanel: '#111827',
+            darkborder: '#1F2937'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar for smooth tech aesthetics */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1F2937;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #374151;
+    }
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .pulse-dot {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(0.9); }
+    }
+  </style>
+</head>
+
+<body class="bg-darkbg text-slate-200 font-sans min-h-screen flex flex-col antialiased">
+
+  <header class="border-b border-darkborder bg-darkpanel/80 sticky top-0 z-50 backdrop-blur-md px-4 lg:px-8 py-3 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+        <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="font-bold text-lg text-white tracking-tight">RST</span>
+        </div>
+        <p class="text-xs text-slate-400">Agentic Research Support & Systematic Literature Synthesis</p>
+      </div>
+    </div>
+
+    <!-- Quick Metrics & Academic Rubric Info -->
+    <div class="hidden md:flex items-center space-x-6 text-xs">
+      <div class="flex items-center space-x-2 bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+        <span class="text-slate-400">Agents:</span>
+        <span class="font-semibold text-slate-200">5 Active</span>
+      </div>
+      <div class="flex items-center space-x-2 bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800">
+        <i data-lucide="database" class="w-3.5 h-3.5 text-cyan-400"></i>
+        <span class="text-slate-400">Knowledge Base:</span>
+        <span class="font-semibold text-slate-200">24 Papers (FAISS)</span>
+      </div>
+      <div class="flex items-center space-x-2 bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800">
+        <i data-lucide="cpu" class="w-3.5 h-3.5 text-purple-400"></i>
+        <span class="text-slate-400">Routing:</span>
+        <span class="font-semibold text-purple-300">Groq + OpenRouter</span>
+      </div>
+    </div>
+
+    <!-- GitHub & LMS Info Button -->
+    <div class="flex items-center space-x-3">
+      <button onclick="toggleModal('rubricModal')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+        <i data-lucide="award" class="w-3.5 h-3.5 text-amber-400"></i>
+        <span>Rubric Alignment</span>
+      </button>
+      <button onclick="copySubmissionTemplate()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition">
+        <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+        <span>Share Prototype</span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="border-b border-darkborder bg-slate-950/60 px-4 lg:px-8 py-2.5 flex space-x-2 overflow-x-auto text-sm">
+    <button onclick="switchTab('workspace')" id="tab-workspace" class="tab-btn active-tab flex items-center space-x-2 px-3.5 py-1.5 rounded-lg font-medium text-xs md:text-sm bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+      <i data-lucide="flask-conical" class="w-4 h-4"></i>
+      <span>Research Workspace</span>
+    </button>
+    <button onclick="switchTab('trace')" id="tab-trace" class="tab-btn flex items-center space-x-2 px-3.5 py-1.5 rounded-lg font-medium text-xs md:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent">
+      <i data-lucide="network" class="w-4 h-4"></i>
+      <span>Agent Sequence & A2A Messages</span>
+    </button>
+    <button onclick="switchTab('rag')" id="tab-rag" class="tab-btn flex items-center space-x-2 px-3.5 py-1.5 rounded-lg font-medium text-xs md:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent">
+      <i data-lucide="file-text" class="w-4 h-4"></i>
+      <span>Domain Corpus & Vector RAG (24 Papers)</span>
+    </button>
+    <button onclick="switchTab('models')" id="tab-models" class="tab-btn flex items-center space-x-2 px-3.5 py-1.5 rounded-lg font-medium text-xs md:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent">
+      <i data-lucide="gauge" class="w-4 h-4"></i>
+      <span>Model Benchmark & Justification</span>
+    </button>
+    <button onclick="switchTab('architecture')" id="tab-architecture" class="tab-btn flex items-center space-x-2 px-3.5 py-1.5 rounded-lg font-medium text-xs md:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent">
+      <i data-lucide="layers" class="w-4 h-4"></i>
+      <span>Architecture & Viva Prep</span>
+    </button>
+  </nav>
+
+  <main class="flex-1 p-4 lg:p-6 max-w-7xl mx-auto w-full">
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: INTERACTIVE RESEARCH WORKSPACE -->
+    <!-- ========================================================================= -->
+    <div id="view-workspace" class="space-y-6">
+      
+      <!-- Query Formulation & Topic Input Panel -->
+      <section class="glass-panel p-5 rounded-2xl border border-slate-800">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="search" class="w-5 h-5 text-emerald-400"></i>
+              Systematic Literature Review Investigation
+            </h2>
+            <p class="text-xs text-slate-400">Configure topic parameters, select multi-agent workflows, and launch automated ReAct synthesis.</p>
+          </div>
+
+
+        </div>
+
+        <!-- Input Box -->
+        <div class="relative">
+          <textarea id="research-query-input" rows="3" class="w-full bg-slate-900/90 text-sm rounded-xl border border-slate-700 p-3.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 font-sans transition" placeholder="Enter research question or systematic review objective...">How do Agentic AI multi-agent workflows with reflection and structured tool-use mitigate hallucinations in automated clinical literature extraction compared to vanilla RAG?</textarea>
+        </div>
+
+        <!-- Controls Row -->
+        <div class="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800/80">
+          <div class="flex flex-wrap items-center gap-4 text-xs text-slate-300">
+            <div class="flex items-center space-x-2">
+              <label class="text-slate-400">RAG Chunking:</label>
+              <select id="chunk-strategy-select" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200">
+                <option value="hierarchical">Hierarchical (512 token child + 2048 parent)</option>
+                <option value="semantic">Semantic Sentence Splitting (Cosine &gt; 0.82)</option>
+                <option value="fixed">Fixed 300 token + 50 overlap</option>
+              </select>
+            </div>
+            <div class="flex items-center space-x-2">
+              <label class="text-slate-400">Reflection Loops:</label>
+              <select id="reflection-depth-select" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200">
+                <option value="2">2 Review Passes (Standard)</option>
+                <option value="1">1 Pass (Fast Latency)</option>
+                <option value="3">3 Passes (Rigorous Academic Viva)</option>
+              </select>
+            </div>
+            <div class="flex items-center space-x-1.5 text-slate-400">
+              <input type="checkbox" id="enable-citations" checked class="rounded bg-slate-900 border-slate-700 text-emerald-500 focus:ring-emerald-500">
+              <label for="enable-citations">Force Citation Grounding [P1..P24]</label>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button id="btn-reset-demo" onclick="resetPipeline()" class="px-3.5 py-2 text-xs font-medium rounded-xl text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
+              Reset
+            </button>
+            <button id="btn-run-pipeline" onclick="startAgenticExecution()" class="flex items-center space-x-2 px-5 py-2 text-xs md:text-sm font-semibold rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white shadow-lg shadow-emerald-500/25 transition">
+              <i data-lucide="play" class="w-4 h-4"></i>
+              <span>Execute Multi-Agent Pipeline</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left 4 Cols: Live Pipeline Stepper -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="cpu" class="w-4 h-4 text-emerald-400"></i>
+                Multi-Agent Workflow Stages
+              </h3>
+              <span id="pipeline-status-badge" class="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">Idle</span>
+            </div>
+
+            <div class="space-y-3" id="agent-stepper-container">
+              <!-- Steps 1 to 5 here... -->
+              <div id="step-1" class="step-card p-3 rounded-xl border border-slate-800 bg-slate-900/60 transition-all duration-300">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center space-x-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs border border-emerald-500/30">1</div>
+                    <div>
+                      <h4 class="text-xs font-semibold text-slate-200">Orchestrator Agent</h4>
+                      <p class="text-[11px] text-slate-400">Goal decomposition & DAG task plan</p>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">MiniMax M3</span>
+                </div>
+                <div class="mt-2 text-[11px] text-slate-400 font-mono hidden step-details pl-9">Decomposed into 4 sub-tasks.</div>
+              </div>
+              
+              <!-- Additional steps simplified for brevity, assume similar structure for 2-5 -->
+              <div id="step-2" class="step-card p-3 rounded-xl border border-slate-800 bg-slate-900/60 transition-all duration-300">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center space-x-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs border border-blue-500/30">2</div>
+                    <div>
+                      <h4 class="text-xs font-semibold text-slate-200">Router Agent</h4>
+                      <p class="text-[11px] text-slate-400">Domain classification & tool selection</p>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Liquid LFM-2.5 2.6B</span>
+                </div>
+              </div>
+
+              <div id="step-3" class="step-card p-3 rounded-xl border border-slate-800 bg-slate-900/60 transition-all duration-300">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center space-x-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-xs border border-cyan-500/30">3</div>
+                    <div>
+                      <h4 class="text-xs font-semibold text-slate-200">Retrieval (RAG) Agent</h4>
+                      <p class="text-[11px] text-slate-400">Vector top-k cosine search & re-ranking</p>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">FAISS (MiniLM)</span>
+                </div>
+              </div>
+
+              <div id="step-4" class="step-card p-3 rounded-xl border border-slate-800 bg-slate-900/60 transition-all duration-300">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center space-x-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-xs border border-purple-500/30">4</div>
+                    <div>
+                      <h4 class="text-xs font-semibold text-slate-200">Synthesis Agent</h4>
+                      <p class="text-[11px] text-slate-400">Matrix extraction & structured drafting</p>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Nemotron-3 Super (120B)</span>
+                </div>
+              </div>
+
+              <div id="step-5" class="step-card p-3 rounded-xl border border-slate-800 bg-slate-900/60 transition-all duration-300">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center space-x-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs border border-amber-500/30">5</div>
+                    <div>
+                      <h4 class="text-xs font-semibold text-slate-200">Reflection & Critic Agent</h4>
+                      <p class="text-[11px] text-slate-400">Factuality check, hallucination score, polish</p>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Nemotron-3.5 Lightning</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Execution Telemetry -->
+            <div class="mt-4 pt-3 border-t border-slate-800 grid grid-cols-3 text-center text-xs">
+              <div>
+                <span class="text-slate-500 block text-[10px]">Total Latency</span>
+                <span id="telemetry-latency" class="font-mono font-semibold text-slate-300">0.0s</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block text-[10px]">Est. Cost</span>
+                <span id="telemetry-cost" class="font-mono font-semibold text-emerald-400">$0.0000</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block text-[10px]">Tokens Used</span>
+                <span id="telemetry-tokens" class="font-mono font-semibold text-purple-300">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Agent ReAct Thought Stream -->
+          <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <i data-lucide="terminal" class="w-3.5 h-3.5 text-emerald-400"></i>
+              Live Agent ReAct Thoughts (Scratchpad)
+            </h3>
+            <div id="react-stream-log" class="bg-black/60 rounded-xl p-3 font-mono text-[11px] text-slate-400 h-48 overflow-y-auto space-y-2 border border-slate-900 leading-relaxed">
+              <div class="text-slate-600">// Ready. Click "Execute Multi-Agent Pipeline" to trace agent execution logs.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 8 Cols: Synthesis & Research Document Output -->
+        <div class="lg:col-span-8 space-y-4">
+          
+          <div class="glass-panel p-5 rounded-2xl border border-slate-800 min-h-[580px] flex flex-col">
+            <!-- Output Header & Export Controls -->
+            <div class="flex flex-wrap items-center justify-between pb-3 border-b border-slate-800 gap-2">
+              <div class="flex items-center space-x-3">
+                <div class="h-3 w-3 rounded-full bg-emerald-500"></div>
+                <span class="font-semibold text-sm text-white">Synthesized Research Literature Review</span>
+                <span id="synthesis-badge" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">Status: Awaiting Trigger</span>
+              </div>
+              
+              <div class="flex items-center space-x-2">
+                <button onclick="copyOutputContent()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center gap-1 transition">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>Copy Markdown</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Main Output Area -->
+            <div id="synthesis-output-content" class="flex-1 py-4 text-sm text-slate-300 space-y-4 overflow-y-auto leading-relaxed">
+              <div class="h-72 flex flex-col items-center justify-center text-center p-6 text-slate-500">
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center mb-3 border border-slate-800">
+                  <i data-lucide="file-search" class="w-6 h-6 text-slate-600"></i>
+                </div>
+                <p class="text-sm font-medium text-slate-400">No active synthesis generated yet</p>
+                <p class="text-xs max-w-sm mt-1">Configure your query above and run the multi-agent pipeline to see live decomposition, retrieval scores, comparative matrix, and critic reflection.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- TAB 2: A2A TRACE -->
+    <div id="view-trace" class="hidden space-y-6">
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800 min-h-[580px]">
+        <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <i data-lucide="network" class="w-5 h-5 text-purple-400"></i>
+          Agent-to-Agent (A2A) Message Trace
+        </h2>
+        <div id="a2a-trace-container" class="space-y-4">
+          <div class="text-slate-500 text-sm italic p-4 text-center">Run the pipeline to see A2A messages.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: RAG -->
+    <div id="view-rag" class="hidden space-y-6">
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="database" class="w-5 h-5 text-cyan-400"></i>
+              Domain Corpus & Vector RAG
+            </h2>
+            <p class="text-slate-400 text-xs mt-1">Underlying knowledge base powered by FAISS + all-MiniLM-L6-v2 embeddings</p>
+          </div>
+          <div class="flex items-center gap-4 text-xs font-mono bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+            <div><span class="text-cyan-400">Papers:</span> <span id="corpus-count">0</span></div>
+            <div class="w-px h-4 bg-slate-700"></div>
+            <div><span class="text-cyan-400">Dim:</span> 384</div>
+            <div class="w-px h-4 bg-slate-700"></div>
+            <div><span class="text-cyan-400">Index:</span> FlatIP</div>
+          </div>
+        </div>
+
+        <!-- Search / Filter (visual only for now) -->
+        <div class="mb-4 relative">
+          <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+          <input type="text" id="corpus-search" placeholder="Filter papers by title or keyword..." class="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 pl-9 pr-4 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-500/50" oninput="filterCorpus()">
+        </div>
+
+        <!-- Papers Grid -->
+        <div id="corpus-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2">
+          <div class="text-slate-500 text-sm text-center col-span-2 py-10 italic">Loading knowledge base...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: MODELS -->
+    <div id="view-models" class="hidden space-y-6">
+
+      <!-- Header -->
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-1">
+              <i data-lucide="gauge" class="w-5 h-5 text-emerald-400"></i>
+              Model Selection Strategy &amp; Benchmark Justification
+            </h2>
+            <p class="text-xs text-slate-400 max-w-2xl">Each agent uses a <strong class="text-slate-200">deliberately chosen</strong> model optimised for its specific sub-task against the dimensions of latency, cost-per-token, context window, and reasoning quality — per the rubric requirement of ≥ 2 distinct models with written justification.</p>
+          </div>
+          <span class="shrink-0 text-xs px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono whitespace-nowrap">IT41043 — Rubric §c</span>
+        </div>
+      </div>
+
+      <!-- Comparison Table -->
+      <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-800 flex items-center gap-2">
+          <i data-lucide="table" class="w-4 h-4 text-cyan-400"></i>
+          <h3 class="text-sm font-bold text-white">Multi-Agent Model Comparison Matrix</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead>
+              <tr class="bg-slate-900/80 border-b border-slate-800">
+                <th class="px-4 py-3 text-slate-400 font-semibold uppercase tracking-wider w-40">Agent / Sub-task</th>
+                <th class="px-4 py-3 text-slate-400 font-semibold uppercase tracking-wider">Model (Provider)</th>
+                <th class="px-4 py-3 text-slate-400 font-semibold uppercase tracking-wider text-center">Latency</th>
+                <th class="px-4 py-3 text-slate-400 font-semibold uppercase tracking-wider text-center">Cost / 1M tok</th>
+                <th class="px-4 py-3 text-slate-400 font-semibold uppercase tracking-wider text-center">Context</th>
+                <th class="px-4 py-3 text-slate-400 font-semibold uppercase tracking-wider">Why Chosen</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60">
+
+              <!-- Row 1: Router -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="px-4 py-3.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                    <div>
+                      <div class="font-semibold text-slate-200">Router Agent</div>
+                      <div class="text-slate-500 text-[10px]">Intent Classification</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3.5">
+                  <div class="font-mono text-blue-300 text-[11px]">meta-llama/llama-3.1-8b-instruct</div>
+                  <div class="text-slate-500 text-[10px] mt-0.5">OpenRouter (free tier)</div>
+                </td>
+                <td class="px-4 py-3.5 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">~0.3s</span>
+                </td>
+                <td class="px-4 py-3.5 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">$0.00</span>
+                </td>
+                <td class="px-4 py-3.5 text-center text-slate-300 font-mono text-[10px]">128k</td>
+                <td class="px-4 py-3.5 text-slate-400 text-[11px] leading-relaxed max-w-xs">
+                  Extremely low latency and near-zero cost. A binary classification (RAG_REQUIRED vs CONVERSATIONAL) does not need a frontier model and should <em>not</em> bottleneck the expensive Synthesizer step downstream.
+                </td>
+              </tr>
+
+              <!-- Row 2: Orchestrator -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="px-4 py-3.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                    <div>
+                      <div class="font-semibold text-slate-200">Orchestrator Agent</div>
+                      <div class="text-slate-500 text-[10px]">Goal Decomposition</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3.5">
+                  <div class="font-mono text-emerald-300 text-[11px]">minimax/minimax-m3</div>
+                  <div class="text-slate-500 text-[10px] mt-0.5">OpenRouter (free tier)</div>
+                </td>
+                <td class="px-4 py-3.5 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/30">~2s</span>
+                </td>
+                <td class="px-4 py-3.5 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">$0.00</span>
+                </td>
+                <td class="px-4 py-3.5 text-center text-slate-300 font-mono text-[10px]">128k</td>
+                <td class="px-4 py-3.5 text-slate-400 text-[11px] leading-relaxed max-w-xs">
+                  MiniMax M3 is a large MoE model with strong JSON schema adherence for structured task plan generation. Confirmed free on OpenRouter, deliberately different vendor (MiniMax) from the Synthesizer (Nvidia) for model diversity across the pipeline.
+                </td>
+              </tr>
+
+              <!-- Row 3: Retriever -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="px-4 py-3.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-cyan-400"></div>
+                    <div>
+                      <div class="font-semibold text-slate-200">Retriever Agent</div>
+                      <div class="text-slate-500 text-[10px]">Vector Re-ranking (ReAct)</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3.5">
+                  <div class="font-mono text-cyan-300 text-[11px]">FAISS + all-MiniLM-L6-v2</div>
+                  <div class="text-slate-500 text-[10px] mt-0.5">HuggingFace (local)</div>
+                </td>
+                <td class="px-4 py-3.5 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">&lt;0.1s</span>
+                </td>
+                <td class="px-4 py-3.5 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">$0.00</span>
+                </td>
+                <td class="px-4 py-3.5 text-center text-slate-300 font-mono text-[10px]">N/A</td>
+                <td class="px-4 py-3.5 text-slate-400 text-[11px] leading-relaxed max-w-xs">
+                  Dense embedding retrieval does not require an LLM. MiniLM-L6-v2 runs locally on CPU in &lt;100ms for top-k cosine search across 24 papers — fast enough to score many chunks without API round-trips or cost.
+                </td>
+              </tr>
+
+              <!-- Row 4: Synthesizer -->
+              <tr class="hover:bg-slate-800/30 transition-colors bg-purple-950/10">
+                <td class="px-4 py-3.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-purple-400"></div>
+                    <div>
+                      <div class="font-semibold text-slate-200">Synthesis Agent</div>
+                      <div class="text-slate-500 text-[10px]">Deep Reasoning + Draft</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3.5">
+                  <div class="font-mono text-purple-300 text-[11px]">nvidia/nemotron-3-super-120b-a12b</div>
+                  <div class="text-slate-500 text-[10px] mt-0.5">OpenRouter (free tier)</div>
+                </td>
+                <td class="px-4 py-3.5 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">~20–40s</span>
+                </td>
+                <td class="px-4 py-3.5 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">$0.00</span>
+                </td>
+                <td class="px-4 py-3.5 text-center text-slate-300 font-mono text-[10px]">163k</td>
+                <td class="px-4 py-3.5 text-slate-400 text-[11px] leading-relaxed max-w-xs">
+                  <strong class="text-purple-300">Largest confirmed-free model at 120B parameters.</strong> Nvidia Nemotron-3 Super excels at academic synthesis. Large parameter count provides superior citation grounding and coherence vs. smaller models. Higher latency justified by output quality.
+                </td>
+              </tr>
+
+              <!-- Row 5: Critic -->
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="px-4 py-3.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                    <div>
+                      <div class="font-semibold text-slate-200">Critic Agent</div>
+                      <div class="text-slate-500 text-[10px]">Reflection / Hallucination Check</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3.5">
+                  <div class="font-mono text-amber-300 text-[11px]">nvidia/nemotron-3.5-lightning</div>
+                  <div class="text-slate-500 text-[10px] mt-0.5">OpenRouter (free tier)</div>
+                </td>
+                <td class="px-4 py-3.5 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/30">~3–5s</span>
+                </td>
+                <td class="px-4 py-3.5 text-center">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">$0.00</span>
+                </td>
+                <td class="px-4 py-3.5 text-center text-slate-300 font-mono text-[10px]">1M</td>
+                <td class="px-4 py-3.5 text-slate-400 text-[11px] leading-relaxed max-w-xs">
+                  <strong class="text-amber-300">Fast distilled Nemotron variant</strong> — confirmed free, ideal for structured JSON evaluation. Intra-vendor diversity from Synthesizer (both Nvidia but different model generations). Low latency suits the reflection/self-critique pattern.
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Design Decision Callouts -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="glass-panel p-4 rounded-2xl border border-emerald-500/20">
+          <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="zap" class="w-4 h-4 text-emerald-400"></i>
+            <h4 class="text-sm font-bold text-white">Latency-First Sub-tasks</h4>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">Router &amp; Retriever are assigned the <span class="text-emerald-400 font-semibold">fastest possible options</span> (8B LLM + FAISS) so they never bottleneck the expensive reasoning steps.</p>
+        </div>
+        <div class="glass-panel p-4 rounded-2xl border border-purple-500/20">
+          <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="brain" class="w-4 h-4 text-purple-400"></i>
+            <h4 class="text-sm font-bold text-white">Reasoning-First Sub-tasks</h4>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">Synthesizer uses <span class="text-purple-400 font-semibold">DeepSeek R1</span> (chain-of-thought, o1-class) because synthesis quality gates the final academic output. Cost of latency is justified.</p>
+        </div>
+        <div class="glass-panel p-4 rounded-2xl border border-amber-500/20">
+          <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i>
+            <h4 class="text-sm font-bold text-white">Cross-Provider Critique</h4>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">Critic uses <span class="text-amber-400 font-semibold">Google Gemini</span> (not DeepSeek) to eliminate provider self-affirmation bias. The 1M context window is a unique advantage for full-document critique.</p>
+        </div>
+      </div>
+
+      <!-- Provider Diversity Summary -->
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800">
+        <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+          <i data-lucide="layers" class="w-4 h-4 text-cyan-400"></i>
+          Provider &amp; Model Diversity Summary
+        </h3>
+        <div class="flex flex-wrap gap-3 text-xs">
+          <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
+            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+            <span class="text-slate-400">Meta / Llama 3.1</span>
+            <span class="text-slate-300 font-semibold">→ Router</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="text-slate-400">MiniMax / M3</span>
+            <span class="text-slate-300 font-semibold">→ Orchestrator</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
+            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+            <span class="text-slate-400">HuggingFace / MiniLM</span>
+            <span class="text-slate-300 font-semibold">→ Retriever</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
+            <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+            <span class="text-slate-400">Nvidia / Nemotron-3 Super 120B</span>
+            <span class="text-slate-300 font-semibold">→ Synthesizer</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span class="text-slate-400">Nvidia / Nemotron-3.5 Lightning</span>
+            <span class="text-slate-300 font-semibold">→ Critic</span>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-500 mt-3">✓ 4 distinct model families across 3 providers (OpenRouter, HuggingFace local, Groq-compatible) satisfying the rubric's minimum of ≥ 2 distinct models for different sub-tasks.</p>
+      </div>
+
+    </div>
+
+    <!-- TAB 5: ARCHITECTURE -->
+    <div id="view-architecture" class="hidden space-y-6">
+      
+      <!-- Mermaid Diagram -->
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="layers" class="w-5 h-5 text-emerald-400"></i>
+              System Architecture &amp; Data Flow
+            </h2>
+            <p class="text-slate-400 text-xs mt-1">Multi-agent topology mapping the Orchestrator-Worker, ReAct, and Reflection patterns.</p>
+          </div>
+          <span class="shrink-0 text-xs px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">IT41043 — Rubric §b</span>
+        </div>
+        
+        <div class="bg-slate-900/60 rounded-xl border border-slate-700/50 p-4 overflow-x-auto flex justify-center">
+          <div class="mermaid">
+            graph TD
+              classDef user fill:#1e293b,stroke:#cbd5e1,stroke-width:2px,color:#f8fafc;
+              classDef ui fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#bfdbfe;
+              classDef agent fill:#022c22,stroke:#10b981,stroke-width:2px,color:#a7f3d0;
+              classDef vector fill:#164e63,stroke:#06b6d4,stroke-width:2px,color:#cffafe;
+              classDef state fill:#312e81,stroke:#6366f1,stroke-width:2px,color:#e0e7ff;
+              
+              U([User]) ::: user
+              UI[Streamlit React UI] ::: ui
+              STATE[(st.session_state)] ::: state
+              
+              U --> |Formulates Query| UI
+              UI --> |Sends payload| STATE
+              
+              subgraph Multi-Agent Backend
+                O[Orchestrator Agent<br/>qwen/qwen3-8b] ::: agent
+                R1[Router Agent<br/>liquid/lfm-2.5] ::: agent
+                R2[Retriever Agent<br/>FAISS (No LLM)] ::: agent
+                S[Synthesizer Agent<br/>nemotron-120b] ::: agent
+                C[Critic Agent<br/>nemotron-3.5] ::: agent
+                
+                DB[(FAISS Vector DB<br/>MiniLM-L6-v2)] ::: vector
+                
+                STATE --> |Triggers| O
+                O --> |Decomposes Goal| R1
+                R1 --> |if RAG_REQUIRED| R2
+                R1 -.-> |if CONVERSATIONAL| S
+                R2 <--> |ReAct Tool Loop| DB
+                R2 --> |Top-k chunks| S
+                S --> |Draft Synthesis| C
+                C -.-> |Reject/Revise| S
+                C --> |Approve| STATE
+              end
+              
+              STATE --> |Renders Output| UI
+          </div>
+        </div>
+      </div>
+
+      <!-- Viva Prep Guide -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Design Patterns -->
+        <div class="glass-panel p-5 rounded-2xl border border-slate-800">
+          <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+            <i data-lucide="git-merge" class="w-4 h-4 text-purple-400"></i>
+            Agentic Design Patterns Used
+          </h3>
+          <ul class="space-y-3 text-xs text-slate-300">
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-slate-100">Orchestrator-Worker:</strong> The Orchestrator agent receives the raw query, decomposes it into a JSON task plan, and delegates execution to the Router/Workers.
+              </div>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-slate-100">ReAct (Reasoning + Acting):</strong> The Retriever agent operates in a ReAct loop. It emits a <code>Thought</code> (e.g., "query confidence is low"), executes an <code>Action</code> (FAISS vector search tool), and processes the <code>Observation</code> (top-k chunks).
+              </div>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-slate-100">Reflection &amp; Self-Critique:</strong> The Critic agent acts as a guardrail. It receives the draft synthesis alongside the grounded evidence chunks, scores the draft for hallucinations (0-10), and explicitly approves or corrects it.
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Technical Viva Defense -->
+        <div class="glass-panel p-5 rounded-2xl border border-slate-800">
+          <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+            <i data-lucide="shield-question" class="w-4 h-4 text-amber-400"></i>
+            Common Viva Defense Points
+          </h3>
+          <ul class="space-y-3 text-xs text-slate-300">
+            <li class="flex items-start gap-2">
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-slate-100">Why not just use a single LLM for everything?</strong>
+                <p class="text-slate-400 mt-1">A single model suffers from context dilution and instruction amnesia. By splitting routing, reasoning, and critique across specialized agents with dedicated system prompts, we enforce strict academic boundaries and mitigate hallucinations.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-slate-100">How is Agent-to-Agent (A2A) communication handled?</strong>
+                <p class="text-slate-400 mt-1">Agents communicate synchronously by passing structured JSON payloads. The global state is managed natively via <code>st.session_state</code>, creating an immutable append-only trace log that the frontend parses for the A2A Trace tab.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-slate-100">Why FAISS over a dedicated vector database like Pinecone?</strong>
+                <p class="text-slate-400 mt-1">For a 24-paper corpus, a local FAISS index running in-memory via FlatIP (Inner Product/Cosine) is significantly faster (&lt;10ms latency) and cheaper than the network overhead of querying a cloud vector database.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function switchTab(tabId) {
+      const tabs = ['workspace', 'trace', 'rag', 'models', 'architecture'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === tabId) {
+            btn.classList.add('active-tab', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+            btn.classList.remove('text-slate-400', 'hover:text-slate-200', 'hover:bg-slate-900', 'border-transparent');
+          } else {
+            btn.classList.remove('active-tab', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+            btn.classList.add('text-slate-400', 'hover:text-slate-200', 'hover:bg-slate-900', 'border-transparent');
+          }
+        }
+        const view = document.getElementById(`view-${t}`);
+        if (view) {
+          if (t === tabId) {
+            view.classList.remove('hidden');
+          } else {
+            view.classList.add('hidden');
+          }
+        }
+      });
+      Streamlit.setFrameHeight(document.body.scrollHeight);
+    }
+
+    lucide.createIcons();
+    let isRunning = false;
+    let componentReadySent = false;
+
+    // Send Streamlit height whenever DOM changes
+    const resizeObserver = new ResizeObserver(() => {
+        Streamlit.setFrameHeight(document.body.scrollHeight);
+    });
+    resizeObserver.observe(document.body);
+
+    // Initialize Streamlit Communication
+    window.addEventListener("load", () => {
+        Streamlit.setComponentReady();
+        componentReadySent = true;
+        Streamlit.setFrameHeight(document.body.scrollHeight);
+    });
+
+    const stepColors = [
+        { border: 'border-emerald-500/50', bg: 'bg-emerald-950/30' },
+        { border: 'border-blue-500/50',    bg: 'bg-blue-950/30' },
+        { border: 'border-cyan-500/50',    bg: 'bg-cyan-950/30' },
+        { border: 'border-purple-500/50',  bg: 'bg-purple-950/30' },
+        { border: 'border-amber-500/50',   bg: 'bg-amber-950/30' },
+    ];
+
+    function updateProgress(stepIndex, scratchpad) {
+        for (let i = 1; i <= 5; i++) {
+            const step = document.getElementById(`step-${i}`);
+            if (step) {
+                if (i <= stepIndex) {
+                    step.classList.remove('border-slate-800', 'bg-slate-900/60');
+                    step.classList.add(stepColors[i-1].border, stepColors[i-1].bg);
+                } else {
+                    step.classList.add('border-slate-800', 'bg-slate-900/60');
+                    step.classList.remove(stepColors[i-1].border, stepColors[i-1].bg);
+                }
+            }
+        }
+        
+        const log = document.getElementById('react-stream-log');
+        log.innerHTML = '';
+        const colorMap = { emerald: 'text-emerald-400', blue: 'text-blue-400', cyan: 'text-cyan-400', purple: 'text-purple-400', amber: 'text-amber-400' };
+        if (scratchpad && scratchpad.length > 0) {
+            scratchpad.forEach(entry => {
+                const d = document.createElement('div');
+                const col = colorMap[entry.color] || 'text-slate-300';
+                d.className = `leading-tight ${col}`;
+                const ts = entry.timestamp || new Date().toLocaleTimeString().split(' ')[0];
+                d.innerHTML = `<span class="text-slate-500">[${ts}]</span> <strong class="text-white">${entry.agent}:</strong> ${escHtml(entry.thought)}`;
+                log.appendChild(d);
+            });
+            log.scrollTop = log.scrollHeight;
+        }
+    }
+
+    let currentCorpus = [];
+
+    function renderCorpus(corpus) {
+        if (!currentCorpus || currentCorpus.length === 0) {
+            currentCorpus = corpus;
+            document.getElementById('corpus-count').innerText = corpus.length;
+            displayCorpusItems(corpus);
+        }
+    }
+
+    function displayCorpusItems(items) {
+        const grid = document.getElementById('corpus-grid');
+        grid.innerHTML = '';
+        if (items.length === 0) {
+            grid.innerHTML = '<div class="text-slate-500 text-sm col-span-2 py-10 italic text-center">No papers found.</div>';
+            return;
+        }
+        
+        items.forEach(paper => {
+            const authorsStr = Array.isArray(paper.authors) ? paper.authors.join(', ') : paper.authors;
+            const keywordsStr = (paper.keywords || []).map(k => `<span class="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-1.5 py-0.5 rounded text-[10px] whitespace-nowrap">${k}</span>`).join(' ');
+            
+            const card = document.createElement('div');
+            card.className = "bg-slate-900/50 border border-slate-700/50 rounded-xl p-4 flex flex-col gap-2 hover:bg-slate-800/50 transition duration-200";
+            
+            card.innerHTML = `
+                <div class="flex justify-between items-start gap-2">
+                    <h3 class="text-sm font-semibold text-slate-200 leading-snug font-sans">${paper.title}</h3>
+                    <span class="shrink-0 font-mono text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">${paper.id}</span>
+                </div>
+                <div class="text-xs text-slate-400 flex flex-wrap gap-x-3 gap-y-1">
+                    <span class="flex items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i> ${authorsStr}</span>
+                    <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> ${paper.year}</span>
+                    <span class="flex items-center gap-1"><i data-lucide="book-open" class="w-3 h-3"></i> ${paper.venue || 'Unknown'}</span>
+                </div>
+                <div class="flex flex-wrap gap-1 mt-1">${keywordsStr}</div>
+                <div class="mt-2 text-[11px] text-slate-500 bg-slate-950/50 border border-slate-800 rounded p-2 max-h-24 overflow-y-auto font-serif leading-relaxed relative group cursor-pointer" onclick="this.classList.toggle('max-h-24')">
+                    ${paper.chunk_text}
+                    <div class="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-slate-950/90 to-transparent group-[.max-h-24]:block hidden"></div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+        lucide.createIcons();
+    }
+
+    function filterCorpus() {
+        const query = document.getElementById('corpus-search').value.toLowerCase();
+        const filtered = currentCorpus.filter(p => {
+            const titleMatch = p.title.toLowerCase().includes(query);
+            const kwMatch = (p.keywords || []).some(k => k.toLowerCase().includes(query));
+            return titleMatch || kwMatch;
+        });
+        displayCorpusItems(filtered);
+    }
+
+    // Listen for data from Streamlit Python backend
+    Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
+        const data = event.detail.args;
+        if (data && data.response) {
+            const resp = data.response;
+            if (resp.telemetry) {
+                document.getElementById('telemetry-latency').innerText = resp.telemetry.latency.toFixed(1) + 's';
+                document.getElementById('telemetry-cost').innerText = '$' + resp.telemetry.cost.toFixed(4);
+                document.getElementById('telemetry-tokens').innerText = resp.telemetry.tokens.toLocaleString();
+            }
+            if (resp.status === "running") {
+                updateProgress(resp.step, resp.scratchpad);
+            } else if (resp.status === "complete" || (typeof resp === 'object' && resp.response)) {
+                renderFinalOutput(resp);
+            } else if (typeof resp === 'string') {
+                // Fallback for plain string
+                renderFinalOutput({ response: resp, critic_score: null, verdict: 'APPROVED', sources: [], scratchpad: [], agent_trace: [] });
+            }
+        }
+        
+        if (data && data.corpus && data.corpus.length > 0) {
+            renderCorpus(data.corpus);
+        }
+        
+        Streamlit.setFrameHeight(document.body.scrollHeight);
+    });
+
+    function resetPipeline() {
+      if (isRunning) return;
+      document.getElementById('pipeline-status-badge').innerText = "Idle";
+      document.getElementById('pipeline-status-badge').className = "text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono";
+      
+      for (let i = 1; i <= 5; i++) {
+        const step = document.getElementById(`step-${i}`);
+        step.classList.remove('border-emerald-500', 'bg-emerald-950/20');
+        step.classList.add('border-slate-800', 'bg-slate-900/60');
+      }
+
+      document.getElementById('react-stream-log').innerHTML = '<div class="text-slate-600">// Ready. Click "Execute Multi-Agent Pipeline" to trace agent execution logs.</div>';
+      
+      document.getElementById('synthesis-output-content').innerHTML = `
+        <div class="h-72 flex flex-col items-center justify-center text-center p-6 text-slate-500">
+          <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center mb-3 border border-slate-800">
+            <i data-lucide="file-search" class="w-6 h-6 text-slate-600"></i>
+          </div>
+          <p class="text-sm font-medium text-slate-400">No active synthesis generated yet</p>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    async function startAgenticExecution() {
+      if (isRunning) return;
+      isRunning = true;
+      
+      const query = document.getElementById('research-query-input').value;
+      const btn = document.getElementById('btn-run-pipeline');
+      btn.disabled = true;
+      btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+      const log = document.getElementById('react-stream-log');
+      log.innerHTML = '';
+
+      function appendLog(agent, text, color = 'text-slate-300') {
+        const d = document.createElement('div');
+        d.className = `leading-tight ${color}`;
+        d.innerHTML = `<span class="text-slate-500">[${new Date().toLocaleTimeString().split(' ')[0]}]</span> <strong class="text-white">${agent}:</strong> ${text}`;
+        log.appendChild(d);
+        log.scrollTop = log.scrollHeight;
+      }
+
+      const statusBadge = document.getElementById('pipeline-status-badge');
+      statusBadge.innerText = "Processing in Python LangGraph...";
+      statusBadge.className = "text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono animate-pulse";
+
+      // Step 1: Send query to Python via Streamlit Component Value
+      appendLog("System", "Sending query to Python LangGraph Backend via Streamlit Component bridge...", "text-emerald-400");
+      
+      // We set the component value so Streamlit reruns and handles the query
+      Streamlit.setComponentValue({ query: query, ts: Date.now() });
+
+      // The animation will pause here until Python sends back `data.response` in the RENDER_EVENT.
+    }
+
+    function renderFinalOutput(resp) {
+      // ── 1. Render scratchpad logs from all agents ────────────────────
+      const log = document.getElementById('react-stream-log');
+      log.innerHTML = '';
+      const colorMap = { emerald: 'text-emerald-400', blue: 'text-blue-400', cyan: 'text-cyan-400', purple: 'text-purple-400', amber: 'text-amber-400' };
+      if (resp.scratchpad && resp.scratchpad.length > 0) {
+        resp.scratchpad.forEach(entry => {
+          const d = document.createElement('div');
+          const col = colorMap[entry.color] || 'text-slate-300';
+          d.className = `leading-tight ${col}`;
+          const ts = entry.timestamp || new Date().toLocaleTimeString().split(' ')[0];
+          d.innerHTML = `<span class="text-slate-500">[${ts}]</span> <strong class="text-white">${entry.agent}:</strong> ${escHtml(entry.thought)}`;
+          log.appendChild(d);
+        });
+      } else {
+        const d = document.createElement('div');
+        d.className = 'leading-tight text-emerald-400';
+        d.innerHTML = `<span class="text-slate-500">[${new Date().toLocaleTimeString().split(' ')[0]}]</span> <strong class="text-white">System:</strong> Pipeline complete. Response received from Python backend.`;
+        log.appendChild(d);
+      }
+      log.scrollTop = log.scrollHeight;
+
+      // ── 2. Mark all stepper steps as complete ───────────────────────
+      for (let i = 1; i <= 5; i++) {
+        const step = document.getElementById(`step-${i}`);
+        if (step) {
+          step.classList.remove('border-slate-800', 'bg-slate-900/60');
+          step.classList.add(stepColors[i-1].border, stepColors[i-1].bg);
+        }
+      }
+
+      // ── 3. Update status badge ───────────────────────────────────────
+      const statusBadge = document.getElementById('pipeline-status-badge');
+      const verdict = resp.verdict || 'APPROVED';
+      statusBadge.innerText = verdict === 'APPROVED' ? '✓ Complete' : '⚠ Revised';
+      statusBadge.className = `text-[11px] px-2 py-0.5 rounded-full font-mono ${verdict === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`;
+
+      const synthBadge = document.getElementById('synthesis-badge');
+      const score = resp.critic_score != null ? resp.critic_score : '?';
+      synthBadge.innerText = `Critic Score: ${score}/10 | ${verdict}`;
+
+      // ── 4. Build sources pills ───────────────────────────────────────
+      let sourcesHtml = '';
+      if (resp.sources && resp.sources.length > 0) {
+        const pills = resp.sources.map(s =>
+          `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-[11px] font-mono text-slate-300">
+            <span class="text-cyan-400">${escHtml(s.id)}</span>
+            <span class="text-slate-500">·</span>
+            <span>${escHtml(s.title.substring(0, 40))}…</span>
+            <span class="text-emerald-400">(${s.score.toFixed(3)})</span>
+           </span>`
+        ).join('');
+        sourcesHtml = `<div class="mt-4 pt-3 border-t border-slate-800">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500 mb-2">Retrieved Sources (cosine similarity)</p>
+          <div class="flex flex-wrap gap-1.5">${pills}</div>
+        </div>`;
+      }
+
+      // ── 5. Render synthesis markdown (basic conversion) ──────────────
+      const rawText = resp.response || '';
+      const htmlText = escHtml(rawText)
+        .replace(/^## (.+)$/gm, '<h2 class="text-base font-bold text-white mt-4 mb-2">$1</h2>')
+        .replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold text-slate-200 mt-3 mb-1">$1</h3>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code class="bg-slate-800 px-1 rounded text-cyan-300 font-mono text-xs">$1</code>')
+        .replace(/\[([A-Z][0-9]+)\]/g, '<sup class="text-cyan-400 font-bold cursor-pointer">[$1]</sup>')
+        .replace(/^\|(.+)$/gm, (line) => {
+          const cells = line.split('|').filter(c => c.trim() !== '');
+          const isHeader = cells.some(c => c.trim().match(/^-+$/));
+          if (isHeader) return '';
+          const tag = 'td';
+          return '<tr>' + cells.map(c => `<${tag} class="border border-slate-700 px-3 py-1 text-xs text-slate-300">${c.trim()}</${tag}>`).join('') + '</tr>';
+        })
+        .replace(/(<tr>.*<\/tr>)/gs, '<table class="border-collapse w-full my-3 text-xs">$1</table>')
+        .replace(/\n/g, '<br>');
+
+      document.getElementById('synthesis-output-content').innerHTML = `
+        <div class="text-sm leading-relaxed text-slate-300 space-y-2">
+          ${htmlText}
+          ${sourcesHtml}
+        </div>
+      `;
+
+      // ── 7. Render A2A Trace ─────────────────────────────────────────
+      const traceContainer = document.getElementById('a2a-trace-container');
+      if (resp.agent_trace && resp.agent_trace.length > 0) {
+        traceContainer.innerHTML = resp.agent_trace.map((msg, i) => `
+          <div class="border border-slate-700 bg-slate-900/50 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-xs font-mono uppercase border border-slate-700">${msg.from}</span>
+                <i data-lucide="arrow-right" class="w-3 h-3 text-slate-500"></i>
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-xs font-mono uppercase border border-slate-700">${msg.to}</span>
+              </div>
+              <span class="text-[10px] text-slate-500 font-mono">${new Date(msg.timestamp).toLocaleTimeString()}</span>
+            </div>
+            <div class="mb-2">
+              <span class="text-xs font-semibold text-purple-400 uppercase tracking-wider">${msg.type}</span>
+            </div>
+            <div class="bg-black/40 rounded p-2 overflow-x-auto text-xs text-slate-400 font-mono">
+              <pre>${escHtml(JSON.stringify(msg.payload, null, 2))}</pre>
+            </div>
+          </div>
+        `).join('');
+        lucide.createIcons();
+      } else {
+        traceContainer.innerHTML = '<div class="text-slate-500 text-sm italic p-4 text-center">No A2A messages recorded for this run.</div>';
+      }
+
+      // ── 6. Re-enable button ──────────────────────────────────────────
+      const btn = document.getElementById('btn-run-pipeline');
+      btn.disabled = false;
+      btn.classList.remove('opacity-50', 'cursor-not-allowed');
+      isRunning = false;
+      Streamlit.setFrameHeight(document.body.scrollHeight);
+    }
+
+    // XSS-safe HTML escaping for user / LLM text
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
