@@ -91,7 +91,7 @@ def get_telemetry():
 # Page Config — Must be first Streamlit call
 # ─────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="LitSynth AI",
+    page_title="RST",
     page_icon="📚",
     layout="wide",
     initial_sidebar_state="collapsed",
