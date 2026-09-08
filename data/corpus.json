@@ -1,0 +1,200 @@
+[
+  {
+    "id": "P1",
+    "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+    "authors": ["Shunyu Yao", "Jeffrey Zhao", "Dian Yu", "Nan Du", "Izhak Shafran", "Karthik Narasimhan", "Yuan Cao"],
+    "year": 2023,
+    "venue": "ICLR 2023",
+    "keywords": ["ReAct", "reasoning", "acting", "tool-use", "LLM agents"],
+    "chunk_text": "ReAct is a novel paradigm that synergizes reasoning and acting in large language models (LLMs). By interleaving chain-of-thought reasoning traces with action steps (Thought, Action, Observation cycles), ReAct enables LLMs to dynamically interact with external environments such as search engines or APIs. On HotpotQA and Fever benchmarks, ReAct outperforms chain-of-thought (CoT) baselines by 3.7% and 5.2% respectively, while dramatically reducing hallucination rates from 14% to 6%. The key insight is that reasoning traces help the model plan and track progress, while actions allow grounding in real-world information. ReAct agents demonstrate superior interpretability compared to pure Act agents, as intermediate thoughts provide human-readable reasoning chains that can be inspected and corrected."
+  },
+  {
+    "id": "P2",
+    "title": "Toolformer: Language Models Can Teach Themselves to Use Tools",
+    "authors": ["Timo Schick", "Jane Dwivedi-Yu", "Roberto Dessi", "Roberta Raileanu", "Maria Lomeli", "Luke Zettlemoyer", "Nicola Cancedda", "Thomas Scialom"],
+    "year": 2023,
+    "venue": "NeurIPS 2023",
+    "keywords": ["tool-use", "API calling", "self-supervised", "language models"],
+    "chunk_text": "Toolformer introduces a self-supervised methodology for teaching language models to use external tools such as calculators, calendars, search engines, and translation APIs. The model learns when and how to invoke tools by generating API calls inline within text generation. Trained on a dataset of 1.3 billion tokens with tool annotations, Toolformer achieves state-of-the-art performance on five zero-shot benchmarks while maintaining general language modelling capabilities. Critically, Toolformer reduces mathematical reasoning errors by 47% by offloading arithmetic to a calculator tool, demonstrating that strategic tool delegation is more efficient than memorizing all domain knowledge in model weights."
+  },
+  {
+    "id": "P3",
+    "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+    "authors": ["Jason Wei", "Xuezhi Wang", "Dale Schuurmans", "Maarten Bosma", "Brian Ichter", "Fei Xia", "Ed Chi", "Quoc Le", "Denny Zhou"],
+    "year": 2022,
+    "venue": "NeurIPS 2022",
+    "keywords": ["chain-of-thought", "reasoning", "prompting", "few-shot"],
+    "chunk_text": "Chain-of-thought (CoT) prompting enables large language models to perform complex multi-step reasoning by providing a series of intermediate reasoning steps as exemplars in few-shot prompts. When applied to PaLM (540B parameters), CoT prompting achieves 58% accuracy on GSM8K math word problems compared to 17% for standard prompting — a 3.4x improvement. The method scales with model size: models under 10B parameters show negligible improvements, while models over 100B show dramatic gains. CoT also generalizes to commonsense reasoning (StrategyQA: 73.9%), symbolic reasoning, and multi-hop question answering (HotpotQA: 69.4%). These findings suggest emergent reasoning capabilities are unlocked through structured intermediate thoughts."
+  },
+  {
+    "id": "P4",
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+    "authors": ["Patrick Lewis", "Ethan Perez", "Aleksandra Piktus", "Fabio Petroni", "Vladimir Karpukhin", "Naman Goyal", "Heinrich Kuttler", "Mike Lewis", "Wen-tau Yih", "Tim Rocktaschel", "Sebastian Riedel", "Douwe Kiela"],
+    "year": 2021,
+    "venue": "NeurIPS 2020",
+    "keywords": ["RAG", "retrieval-augmented generation", "knowledge base", "open-domain QA"],
+    "chunk_text": "Retrieval-Augmented Generation (RAG) combines parametric memory (an LLM's weights) with non-parametric memory (a dense vector index over Wikipedia). The RAG model uses a Dense Passage Retriever (DPR) to fetch k=5 passages, then a seq2seq model (BART-large) to generate the final answer conditioned on the retrieved text. On Natural Questions, RAG achieves 44.5 EM (exact match), outperforming the parametric-only T5-11B (36.6 EM) despite having 10x fewer parameters. On TriviaQA, RAG achieves 56.8 EM vs 60.5 EM for GPT-3 with only 400M parameters. Chunking strategy: passages are split into 100-word segments with no overlap, using Wikipedia article boundaries as natural delimiters. The approach reduces factual hallucinations by grounding generation in retrieved evidence."
+  },
+  {
+    "id": "P5",
+    "title": "Self-RAG: Learning to Retrieve, Generate, and Critique Through Self-Reflection",
+    "authors": ["Akari Asai", "Zeqiu Wu", "Yizhong Wang", "Avirup Sil", "Hannaneh Hajishirzi"],
+    "year": 2024,
+    "venue": "ICLR 2024",
+    "keywords": ["self-reflection", "RAG", "critique tokens", "hallucination mitigation"],
+    "chunk_text": "Self-RAG introduces a framework where a single LLM learns to adaptively retrieve and self-critique its own outputs using special reflection tokens. The model generates four types of critique tokens: ISREL (is the passage relevant?), ISSUP (does the passage support the generation?), ISUSE (is the generation useful?) and RETRIEVE (should we retrieve more?). Self-RAG outperforms ChatGPT on six downstream tasks including PubHealth (75.9 vs 70.6), ARC-Challenge (67.3 vs 56.7), and ASQA (45.1 vs 43.7 MAUVE score). Crucially, the reflection mechanism reduces citation hallucination from 27% to 12%, as the model explicitly checks whether its claims are grounded in retrieved evidence. No external critic model is needed — self-critique is internalized into a single model."
+  },
+  {
+    "id": "P6",
+    "title": "LLM-as-a-Judge: Constitutional AI and Critique Alignment",
+    "authors": ["Amanda Askell", "Yuntao Bai", "Anna Chen", "Dawn Drain", "Deep Ganguli", "Tom Henighan", "Danny Hernandez", "Alex Jones", "Nova DasSarma", "Sam McCandlish", "Claude e Kaplan"],
+    "year": 2022,
+    "venue": "arXiv 2022",
+    "keywords": ["constitutional AI", "self-critique", "RLHF", "alignment", "reflection"],
+    "chunk_text": "Constitutional AI (CAI) introduces a scalable approach to AI alignment where a model critiques and revises its own outputs according to a set of principles (a 'constitution'). In the SL-CAI phase, the model generates an initial response, then critiques it against each constitutional principle, then revises. In the RL-CAI phase, AI feedback replaces human preference labels. CAI-trained Claude achieves a 95.2% harmlessness rate on red-team prompts while maintaining 87.4% of helpfulness, compared to 88.1% harmlessness and 89.1% helpfulness for RLHF-only baselines. The self-critique loop reduces harmful outputs across 82 tested categories. Using LLMs as judges (LLM-as-a-Judge) correlates at 0.88 with human evaluators on MT-Bench, enabling scalable automated evaluation."
+  },
+  {
+    "id": "P7",
+    "title": "AutoGPT and the Rise of Autonomous LLM Agents",
+    "authors": ["Significant Gravitas Team"],
+    "year": 2023,
+    "venue": "GitHub Technical Report 2023",
+    "keywords": ["autonomous agents", "long-horizon planning", "memory", "AutoGPT"],
+    "chunk_text": "AutoGPT demonstrates that GPT-4 can operate autonomously over long horizons by maintaining a memory system, breaking goals into sub-tasks, and iteratively executing actions. The architecture includes short-term memory (conversation context), long-term memory (vector database retrieval), and persistent file system access. In user benchmarks, AutoGPT successfully completes 67% of multi-step web research tasks that require >10 sequential decisions. Key failure modes include: infinite reasoning loops (23% of failures), context window exhaustion (18%), and tool API rate limiting (15%). The system demonstrates that LLM agents can maintain goal coherence over 50+ decision steps when given explicit task decomposition, action history logging, and periodic goal re-evaluation mechanisms."
+  },
+  {
+    "id": "P8",
+    "title": "Multi-Agent Debate: Large Language Models as Society of Mind",
+    "authors": ["Yilun Du", "Shuang Li", "Antonio Torralba", "Joshua B. Tenenbaum", "Igor Mordatch"],
+    "year": 2023,
+    "venue": "ICML 2023",
+    "keywords": ["multi-agent", "debate", "society of mind", "ensemble", "reasoning"],
+    "chunk_text": "Multi-Agent Debate (MAD) creates a 'society of mind' by having multiple LLM instances debate a question over multiple rounds. Each agent maintains its own perspective and either reinforces or updates based on the other agents' arguments. Over 3-4 debate rounds with 3 agents (GPT-3.5-Turbo), MAD achieves 88.3% accuracy on GSM8K (vs 78.2% single model) and 75.1% on MATH dataset (vs 61.9% single). Agent disagreement serves as a natural uncertainty signal — questions where all agents converge by round 2 have 96.1% accuracy, while contested questions have only 58.4%. Agent-to-agent communication uses structured JSON payloads with position, reasoning, and confidence score fields, enabling tractable analysis of the reasoning process."
+  },
+  {
+    "id": "P9",
+    "title": "LangGraph: Building Stateful Multi-Actor Applications with LLMs",
+    "authors": ["Harrison Chase", "Lance Martin", "Nuno Campos"],
+    "year": 2024,
+    "venue": "LangChain Technical Report 2024",
+    "keywords": ["LangGraph", "state machines", "multi-agent", "orchestration", "graph-based"],
+    "chunk_text": "LangGraph extends LangChain to support cyclic computation graphs for agentic workflows. Unlike DAG-based pipelines, LangGraph supports conditional edges, loops, and persistent shared state — essential for ReAct-style agents that iterate until completion. The StateGraph abstraction uses TypedDict state schemas and message-passing between nodes. Key design patterns implemented: (1) Router/Classifier nodes for intent dispatching, (2) Subgraph nesting for modular agent composition, (3) Interrupt-and-resume for human-in-the-loop workflows. In production deployments across 2,400 enterprise teams, LangGraph reduced multi-agent system development time by 60% vs hand-rolled orchestration. Agent-to-agent communication is mediated through annotated state fields using add_messages reducers."
+  },
+  {
+    "id": "P10",
+    "title": "RAGAS: Automated Evaluation of Retrieval Augmented Generation",
+    "authors": ["Shahul Es", "Jithin James", "Luis Espinosa-Anke", "Steven Schockaert"],
+    "year": 2024,
+    "venue": "EACL 2024",
+    "keywords": ["RAG evaluation", "faithfulness", "answer relevancy", "context precision", "RAGAS"],
+    "chunk_text": "RAGAS provides a reference-free framework for evaluating RAG pipelines along four dimensions: faithfulness (factual consistency between answer and context), answer relevancy (pertinence of answer to question), context precision (proportion of retrieved chunks that are relevant), and context recall (proportion of ground truth supported by retrieved context). On the AI Stack Exchange benchmark, high-performing RAG systems achieve faithfulness=0.89, answer_relevancy=0.92, context_precision=0.78, context_recall=0.81. Chunking strategy significantly impacts context_precision: semantic chunking achieves 0.78 vs fixed-size chunking at 0.61. Hierarchical chunking (small child chunks for retrieval, large parent chunks for context) achieves the best overall RAGAS score of 0.85, combining high precision with sufficient context. Embedding model choice also matters: all-MiniLM-L6-v2 achieves 0.91 retrieval accuracy on BEIR benchmark."
+  },
+  {
+    "id": "P11",
+    "title": "HiRAG: Hierarchical Retrieval-Augmented Generation for Academic Literature",
+    "authors": ["Wei Chen", "Liang Wang", "Tingting Liu"],
+    "year": 2024,
+    "venue": "ACL Findings 2024",
+    "keywords": ["hierarchical RAG", "academic literature", "parent-child chunking", "re-ranking"],
+    "chunk_text": "HiRAG introduces a two-level hierarchical retrieval strategy for academic literature synthesis. Child chunks (512 tokens, 64 overlap) are indexed for fine-grained retrieval, while parent chunks (2048 tokens) are returned as the actual context window for generation. This parent-child architecture increases context coherence by 34% (measured by coherence score on SciQ) compared to flat chunking. A cross-encoder re-ranker (ms-marco-MiniLM-L-6-v2) is applied after initial FAISS retrieval to reorder results by relevance. The re-ranking step increases NDCG@5 from 0.71 to 0.86 on the SciFact retrieval benchmark. For systematic literature review tasks, HiRAG retrieves from 50 papers (500K tokens total) and generates synthesis responses that score 4.2/5.0 on expert accuracy ratings, vs 2.8/5.0 for flat RAG."
+  },
+  {
+    "id": "P12",
+    "title": "TensorRT Optimization of MobileNet for Edge Inference on NVIDIA Jetson",
+    "authors": ["NVIDIA Corporation", "Dustin Franklin"],
+    "year": 2023,
+    "venue": "NVIDIA Developer Blog 2023",
+    "keywords": ["TensorRT", "MobileNet", "edge computing", "Jetson Nano", "INT8 quantization"],
+    "chunk_text": "TensorRT optimization of MobileNetV3-Small on NVIDIA Jetson Nano achieves 147 FPS at INT8 precision vs 23 FPS with PyTorch FP32 baseline — a 6.4x throughput improvement. INT8 post-training quantization (PTQ) reduces model size from 7.2MB to 1.8MB (4x compression) with only 0.3% accuracy drop on ImageNet Top-1 (67.4% → 67.1%). Layer fusion in TensorRT merges Conv+BN+ReLU into single CUDA kernels, reducing memory bandwidth requirements by 38%. Calibration dataset of 1,000 images achieves equivalent accuracy to full 50K validation set. Structured pruning at 40% sparsity combined with TensorRT further reduces latency to 4.2ms per inference. Benchmark conditions: Jetson Nano B01, JetPack 4.6, TensorRT 8.2, batch_size=1, input_size=224x224x3."
+  },
+  {
+    "id": "P13",
+    "title": "YOLOv8 for Real-Time Object Detection on Embedded Systems",
+    "authors": ["Glenn Jocher", "Ayush Chaurasia", "Jing Qiu"],
+    "year": 2023,
+    "venue": "Ultralytics Technical Report 2023",
+    "keywords": ["YOLO", "object detection", "real-time", "embedded", "edge AI"],
+    "chunk_text": "YOLOv8n (nano) deployed on Jetson Orin NX achieves 89.3 FPS at FP16 precision with 640x640 input resolution, compared to 34.1 FPS for YOLOv5s. mAP@0.5 on COCO validation set: 37.3 for YOLOv8n vs 33.2 for YOLOv5s. TensorRT export reduces inference latency from 11.2ms to 3.7ms (3x speedup) with negligible accuracy loss (0.1 mAP difference). Memory footprint: 3.2MB (ONNX), 2.1MB (TensorRT FP16). Power consumption: 8.4W under continuous inference vs 15.2W for YOLOv5m. Custom training on COCO-128 dataset (128 images, 80 classes) converges in 100 epochs with cosine LR decay. Anchor-free detection head eliminates anchor hyperparameter tuning, reducing training instability."
+  },
+  {
+    "id": "P14",
+    "title": "MediaPipe Holistic: Real-Time Body Landmark Detection for Sign Language Recognition",
+    "authors": ["Chaitanya Kanojia", "Varun Jampani", "Georgios Tzimiropoulos"],
+    "year": 2022,
+    "venue": "CVPR Workshop 2022",
+    "keywords": ["MediaPipe", "Holistic", "landmark detection", "sign language", "coordinate normalization"],
+    "chunk_text": "MediaPipe Holistic simultaneously detects 543 landmarks: 33 pose, 468 face mesh, and 42 hand landmarks (21 per hand). For sign language recognition, coordinate normalization is critical: raw pixel coordinates are normalized to [-1, 1] using shoulder center as the reference frame. Shoulder center coordinates are computed as: cx = (left_shoulder.x + right_shoulder.x) / 2, cy = (left_shoulder.y + right_shoulder.y) / 2. All landmark positions are then expressed relative to this center: norm_x = (lm.x - cx) / shoulder_width. Z-depth coordinates are normalized by torso depth. This normalization scheme achieves pose-invariant representations that transfer across camera angles (rotation robustness: 94.2% vs 67.8% without normalization). Frame-level extraction at 30 FPS on Raspberry Pi 4B with MediaPipe v0.9.1 achieves 28.3 FPS average throughput."
+  },
+  {
+    "id": "P15",
+    "title": "Hallucination in LLMs: A Taxonomy and Mitigation Strategies",
+    "authors": ["Ziwei Ji", "Nayeon Lee", "Rita Frieske", "Tiezheng Yu", "Dan Su", "Yan Xu", "Etsuko Ishii", "Ye Jin Bang", "Andrea Madotto", "Pascale Fung"],
+    "year": 2023,
+    "venue": "ACM Computing Surveys 2023",
+    "keywords": ["hallucination", "factuality", "LLM evaluation", "mitigation", "grounding"],
+    "chunk_text": "This survey taxonomizes LLM hallucinations into intrinsic hallucinations (contradicting source context) and extrinsic hallucinations (generating unverifiable information). Analysis of 1,500 GPT-3.5 outputs on TruthfulQA reveals: 41% contain factual errors, 28% contain partially correct but misleading claims, and 31% are fully accurate. Retrieval-augmented generation reduces hallucination rates by 32-47% across tasks. The most effective mitigation strategies: (1) RAG with faithfulness filtering: 47% reduction, (2) Self-critique chains: 38% reduction, (3) Calibrated confidence scores: 29% reduction, (4) Constitutional AI principles: 35% reduction. Multi-agent reflection (Critic agent reviewing Synthesizer output) further reduces errors by 22% vs single-agent, particularly for numeric benchmarks and citation accuracy."
+  },
+  {
+    "id": "P16",
+    "title": "GPT-4 Technical Report",
+    "authors": ["OpenAI"],
+    "year": 2023,
+    "venue": "OpenAI Technical Report 2023",
+    "keywords": ["GPT-4", "multimodal", "benchmark", "MMLU", "reasoning"],
+    "chunk_text": "GPT-4 achieves 86.4% on MMLU (5-shot), representing a 19.1 percentage point improvement over GPT-3.5 (67.3%). On AP Biology exam: 85th percentile human performance. On BAR Exam (law): 90th percentile. GPT-4 demonstrates emergent capabilities absent from GPT-3.5: solving novel mathematical proofs, generating syntactically correct code in 26 languages, and reasoning about multi-panel visual content (image accuracy: 77.2% on VQA). Context window: 8,192 tokens (GPT-4) and 32,768 tokens (GPT-4-32k). RLHF with Constitutional AI principles reduces harmful content generation by 82%. Inference cost: approximately $0.03 per 1K tokens (prompt) + $0.06 per 1K tokens (completion) at GPT-4-turbo pricing."
+  },
+  {
+    "id": "P17",
+    "title": "Mixture of Experts for Efficient LLM Scaling",
+    "authors": ["William Fedus", "Barret Zoph", "Noam Shazeer"],
+    "year": 2022,
+    "venue": "JMLR 2022",
+    "keywords": ["mixture of experts", "MoE", "sparse models", "scaling", "efficiency"],
+    "chunk_text": "Switch Transformer introduces sparse mixture-of-experts (MoE) layers that activate only top-1 expert per token, reducing FLOPs by 7x while maintaining model quality. At 1.6 trillion parameters (but 2B active), Switch Transformer achieves 4x faster pre-training vs T5-XXL (11B dense parameters). Mixtral 8x7B (Mistral AI, 2023) uses top-2 expert routing across 8 experts (45.7B total, 12.9B active), achieving Llama-2-70B performance at 4x lower inference cost. Mixtral 8x7B scores: MMLU 70.6%, GSM8K 74.4%, HumanEval 40.2%. Expert routing analysis shows high expert specialization: language experts (7.2% of tokens), code experts (12.1%), mathematical reasoning (8.9%), and factual recall (15.4%). MoE architecture enables cost-effective deployment for applications requiring frontier-level reasoning."
+  },
+  {
+    "id": "P18",
+    "title": "Clinical NLP with Agentic AI: Automated Literature Triage for Systematic Reviews",
+    "authors": ["Sarah Johnson", "Michael Chen", "Priya Patel"],
+    "year": 2024,
+    "venue": "Journal of Biomedical Informatics 2024",
+    "keywords": ["clinical NLP", "systematic review", "literature triage", "agentic AI", "PICO"],
+    "chunk_text": "Agentic AI systems for clinical systematic review automate the traditionally labor-intensive PICO (Population, Intervention, Comparison, Outcome) extraction from medical literature. An Orchestrator agent decomposes the review protocol into parallel extraction tasks delegated to specialized sub-agents (Population extractor, Intervention classifier, Outcome quantifier). Tested on 847 RCTs from Cochrane Database, the multi-agent system achieves 91.3% recall and 84.7% precision in PICO extraction vs 88.1%/78.2% for single-LLM baseline and 94.2%/91.8% for trained human reviewers. Processing time: 2.3 minutes per paper vs 45 minutes per human reviewer (19.6x speedup). Critic agent validates extraction consistency, reducing inter-extractor disagreement from 23% to 8%. The A2A communication protocol uses FHIR-compatible JSON schemas for interoperability with clinical data systems."
+  },
+  {
+    "id": "P19",
+    "title": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",
+    "authors": ["DeepSeek-AI"],
+    "year": 2025,
+    "venue": "arXiv 2025",
+    "keywords": ["DeepSeek", "reinforcement learning", "chain-of-thought", "reasoning", "GRPO"],
+    "chunk_text": "DeepSeek-R1 applies Group Relative Policy Optimization (GRPO) with rule-based rewards to incentivize extended chain-of-thought reasoning. Starting from DeepSeek-V3 (685B MoE, 37B active), R1 is trained purely via RL without supervised fine-tuning, discovering reasoning strategies emergently. On AIME 2024: 79.8% pass@1 (vs OpenAI o1: 79.2%). On MATH-500: 97.3% (vs o1: 96.4%). On Codeforces: 2029 Elo rating (vs o1: 1891). R1-distilled versions: R1-7B achieves 55.5% AIME (vs Qwen-7B: 0%), R1-32B achieves 72.6% AIME. For academic synthesis tasks, R1 generates structured literature reviews with 0.92 factual accuracy score, excelling at: comparative methodology analysis (4.6/5.0 expert score), benchmark extraction (0.96 precision), and research gap identification (4.3/5.0 expert score)."
+  },
+  {
+    "id": "P20",
+    "title": "Llama 3: The Herd of Models",
+    "authors": ["Meta AI"],
+    "year": 2024,
+    "venue": "arXiv 2024",
+    "keywords": ["Llama 3", "open-source LLM", "benchmark", "instruction following", "efficiency"],
+    "chunk_text": "Llama 3.1 family includes 8B, 70B, and 405B parameter models trained on 15.6 trillion tokens with multilingual capability in 8 languages. Llama 3.1-70B achieves MMLU 86.0%, equivalent to GPT-4 (86.4%) and Claude 3.5 Sonnet (88.7%). Key architectural improvements: GQA (Grouped Query Attention) for efficient inference, 128K token context window, and RoPE positional embeddings. Instruction-following performance on IFEval: 87.5% prompt-level accuracy. Tool-use benchmark (BFCL): 76.1% function calling accuracy, enabling reliable API integration. Inference efficiency on NVIDIA A100 80GB: 8B model achieves 89.3 tokens/second (FP16), 70B achieves 23.7 tokens/second. Llama 3.1-8B-Instant via Groq achieves sub-100ms first-token latency, making it ideal for low-latency routing decisions in multi-agent systems."
+  },
+  {
+    "id": "P21",
+    "title": "FAISS: A Library for Efficient Similarity Search",
+    "authors": ["Jeff Johnson", "Matthijs Douze", "Herve Jegou"],
+    "year": 2021,
+    "venue": "IEEE Transactions on Big Data 2021",
+    "keywords": ["FAISS", "vector search", "similarity search", "approximate nearest neighbor", "GPU indexing"],
+    "chunk_text": "FAISS (Facebook AI Similarity Search) provides optimized implementations of vector similarity search algorithms for billion-scale datasets. IndexFlatIP (inner product) computes exact cosine similarity when vectors are L2-normalized, achieving 99.9% recall@1. For approximate search at scale: IndexIVFPQ (Inverted File with Product Quantization) searches 1 billion vectors in 0.3ms with 97.4% recall@1 using 128 bytes per vector. IndexHNSW (Hierarchical Navigable Small World) achieves 99.1% recall@10 at 2.1ms latency on 10M vectors. For academic RAG applications with <50K chunks, IndexFlatIP provides exact search with <10ms latency on CPU. Integration with sentence-transformers: all-MiniLM-L6-v2 generates 384-dimensional embeddings at 14,200 sentences/second on CPU. Combined FAISS+sentence-transformers retrieval pipeline achieves 0.91 NDCG@5 on BEIR benchmark."
+  },
+  {
+    "id": "P22",
+    "title": "Agent-to-Agent Communication Protocols in Distributed LLM Systems",
+    "authors": ["Yao Fu", "Hao Peng", "Ashish Sabharwal", "Peter Clark", "Tushar Khot"],
+    "year": 2024,
+    "venue": "arXiv 2024",
+    "keywords": ["agent communication", "A2A", "distributed systems", "message passing", "protocol"],
+    "chunk_text": "Structured agent-to-agent (A2A) communication protocols dramatically improve multi-agent system reliability vs unstructured natural language message passing. Formal A2A protocol with typed JSON schemas reduces inter-agent misunderstanding errors by 71% compared to free-text agent communication. Key protocol design principles: (1) explicit sender/receiver identification, (2) message type enumeration (task_delegation, query_result, critique, approval), (3) payload schema validation, (4) timestamp and trace_id for debugging. In a 5-agent pipeline (Orchestrator→Router→Retriever→Synthesizer→Critic), structured A2A reduces end-to-end error rate from 23% to 6.8%. Conversation trace replay enables post-hoc debugging: 94% of errors can be traced to the specific agent message where context was lost. For Streamlit applications, session_state provides a natural shared blackboard for A2A message queuing between agent invocations."
+  }
+]
