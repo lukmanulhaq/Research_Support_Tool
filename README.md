@@ -1,6 +1,6 @@
 # Agentic Research Assistant: Edge AI & Gesture Tracking Literature Triage
 
-**Live Streamlit Demo:** [Insert your Streamlit Community Cloud URL here][cite: 1]
+**Live Streamlit Demo:** [https://research-support-tool.streamlit.app]
 
 ## 1. Project Description
 This Agentic AI application is a research support tool designed to automate literature triage, methodology extraction, and structural analysis of academic datasets. It directly supports ongoing research in lightweight edge-based computer vision, specifically focusing on optimizing MobileNet and YOLO architectures via TensorRT, as well as analyzing MediaPipe Holistic landmark extraction techniques for custom sign language datasets. 
