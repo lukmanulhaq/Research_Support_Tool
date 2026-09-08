@@ -117,18 +117,6 @@
         <span class="font-semibold text-purple-300">Groq + OpenRouter</span>
       </div>
     </div>
-
-    <!-- GitHub & LMS Info Button -->
-    <div class="flex items-center space-x-3">
-      <button onclick="toggleModal('rubricModal')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
-        <i data-lucide="award" class="w-3.5 h-3.5 text-amber-400"></i>
-        <span>Rubric Alignment</span>
-      </button>
-      <button onclick="copySubmissionTemplate()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition">
-        <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
-        <span>Share Prototype</span>
-      </button>
-    </div>
   </header>
 
   <nav class="border-b border-darkborder bg-slate-950/60 px-4 lg:px-8 py-2.5 flex space-x-2 overflow-x-auto text-sm">
@@ -1121,6 +1109,93 @@
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'fixed bottom-4 right-4 bg-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg shadow-emerald-600/20 z-50 text-sm font-medium transition-opacity duration-300 opacity-0';
+      toast.innerText = message;
+      document.body.appendChild(toast);
+      
+      // Trigger reflow
+      void toast.offsetWidth;
+      toast.classList.remove('opacity-0');
+      
+      setTimeout(() => {
+        toast.classList.add('opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function copySubmissionTemplate() {
+      const url = window.location.href;
+      const template = `Check out my Agentic Research Support Tool (RST) prototype!\n\nLink: ${url}`;
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(template).then(() => {
+          showToast("Prototype link copied to clipboard!");
+        }).catch(err => {
+          console.error('Failed to copy: ', err);
+          showToast("Failed to copy link.");
+        });
+      } else {
+        // Fallback for non-secure contexts
+        const textArea = document.createElement("textarea");
+        textArea.value = template;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showToast("Prototype link copied to clipboard!");
+        } catch (err) {
+          console.error('Fallback: Oops, unable to copy', err);
+          showToast("Failed to copy link.");
+        }
+        document.body.removeChild(textArea);
+      }
+    }
+
+    function copyOutputContent() {
+      const contentElem = document.getElementById('synthesis-output-content');
+      let content = contentElem ? contentElem.innerText : '';
+      if (!content || content.includes('No active synthesis generated yet')) {
+        showToast("No content to copy yet.");
+        return;
+      }
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(content).then(() => {
+          showToast("Synthesis content copied to clipboard!");
+        }).catch(err => {
+          console.error('Failed to copy: ', err);
+          showToast("Failed to copy content.");
+        });
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = content;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showToast("Synthesis content copied to clipboard!");
+        } catch (err) {
+          console.error('Fallback: Oops, unable to copy', err);
+          showToast("Failed to copy content.");
+        }
+        document.body.removeChild(textArea);
+      }
+    }
+
+    function toggleModal(id) {
+        showToast("Academic Rubric Alignment modal opening...");
     }
   </script>
 </body>
